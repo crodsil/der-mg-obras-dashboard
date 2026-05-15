@@ -28,12 +28,26 @@ st.markdown("""
         padding: 0rem 1rem;
     }
     .stMetric {
-        background-color: #f0f2f6;
+        background-color: #1e1e1e;
         padding: 15px;
         border-radius: 10px;
+        border: 1px solid #333;
+    }
+    .stMetric label {
+        color: #ffffff !important;
+    }
+    .stMetric [data-testid="stMetricValue"] {
+        color: #4CAF50 !important;
+        font-size: 2rem !important;
+    }
+    .stMetric [data-testid="stMetricDelta"] {
+        color: #ff9800 !important;
     }
     h1 {
-        color: #1f77b4;
+        color: #4CAF50;
+    }
+    h2, h3 {
+        color: #ffffff;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -44,7 +58,6 @@ def load_data():
     data_path = Path(__file__).parent.parent / "data" / "processed" / "obras_processadas.csv"
     
     if not data_path.exists():
-        st.warning("⚠️ Gerando dados simulados... (Execute o ETL localmente para dados reais)")
         df = generate_sample_data()
     else:
         df = pd.read_csv(data_path)
