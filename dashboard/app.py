@@ -40,15 +40,14 @@ st.markdown("""
 
 @st.cache_data
 def load_data():
-    """Carrega dados processados"""
+    """Carrega dados processados ou gera dados simulados"""
     data_path = Path(__file__).parent.parent / "data" / "processed" / "obras_processadas.csv"
     
     if not data_path.exists():
-        st.error(f"❌ Arquivo de dados não encontrado: {data_path}")
-        st.info("Execute o pipeline ETL primeiro: `python etl/extract.py && python etl/transform.py && python etl/load.py`")
-        st.stop()
-    
-    df = pd.read_csv(data_path)
+        st.warning("⚠️ Gerando dados simulados... (Execute o ETL localmente para dados reais)")
+        df = generate_sample_data()
+    else:
+        df = pd.read_csv(data_path)
     
     # Converte datas
     date_cols = ['data_inicio', 'data_prevista_conclusao', 'data_extracao']
@@ -57,6 +56,74 @@ def load_data():
             df[col] = pd.to_datetime(df[col], errors='coerce')
     
     return df
+
+def generate_sample_data():
+    """Gera dados simulados para demonstração"""
+    import random
+    from datetime import datetime, timedelta
+    
+    regioes = ['Belo Horizonte', 'Juiz de Fora', 'Montes Claros', 'Uberlândia',
+               'Governador Valadares', 'Varginha', 'Uberaba', 'Patos de Minas', 'Teófilo Otoni']
+    status_opcoes = ['Em andamento', 'Concluída', 'Paralisada', 'Em licitação']
+    tipos_obra = ['Pavimentação', 'Restauração', 'Duplicação', 'Ponte', 'Viaduto', 'Sinalização', 'Drenagem']
+    
+    data = []
+    for i in range(1, 151):
+        regiao = random.choice(regioes)
+        tipo = random.choice(tipos_obra)
+        status = random.choice(status_opcoes)
+        valor_contrato = random.uniform(500000, 15000000)
+        percentual_execucao = random.uniform(0, 100) if status != 'Em licitação' else 0
+        ano_inicio = random.randint(2020, 2024)
+        mes_inicio = random.randint(1, 12)
+        data_inicio = f"{ano_inicio}-{mes_inicio:02d}-{random.randint(1, 28):02d}"
+        prazo_meses = random.randint(6, 36)
+        rodovia = f"MG-{random.randint(10, 999):03d}"
+        latitude = random.uniform(-22.5, -15.0)
+        longitude = random.uniform(-51.0, -40.0)
+        
+        # Calcula status semáforo
+        if status == 'Paralisada':
+            status_semaforo = 'vermelho'
+        elif status == 'Concluída':
+            status_semaforo = 'verde'
+        elif status == 'Em licitação':
+            status_semaforo = 'azul'
+        else:
+            if percentual_execucao >= 70:
+                status_semaforo = 'verde'
+            elif percentual_execucao >= 40:
+                status_semaforo = 'amarelo'
+            else:
+                status_semaforo = 'vermelho'
+        
+        obra = {
+            'id_obra': f'DER-{i:04d}',
+            'nome_obra': f'{tipo} {rodovia} - Trecho {regiao}',
+            'tipo_obra': tipo,
+            'regiao': regiao,
+            'rodovia': rodovia,
+            'status': status,
+            'valor_contrato': valor_contrato,
+            'percentual_execucao': percentual_execucao,
+            'data_inicio': data_inicio,
+            'prazo_meses': prazo_meses,
+            'empresa_contratada': f'Construtora {random.choice(["Alpha", "Beta", "Gamma", "Delta", "Omega"])} Ltda',
+            'latitude': latitude,
+            'longitude': longitude,
+            'data_extracao': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'status_semaforo': status_semaforo,
+            'dados_completos': True,
+            'tem_geolocalizacao': True,
+            'obra_recente': ano_inicio >= 2022,
+            'dias_desde_inicio': random.randint(0, 1000),
+            'data_prevista_conclusao': (datetime.strptime(data_inicio, '%Y-%m-%d') + timedelta(days=prazo_meses*30)).strftime('%Y-%m-%d'),
+            'valor_executado': valor_contrato * (percentual_execucao / 100),
+            'categoria_valor': 'Grande' if valor_contrato > 5000000 else 'Médio' if valor_contrato > 1000000 else 'Pequeno'
+        }
+        data.append(obra)
+    
+    return pd.DataFrame(data)
 
 @st.cache_data
 def load_metadata():
