@@ -1,0 +1,37 @@
+============================================================
+RELATÓRIO DE QUALIDADE DOS DADOS
+============================================================
+
+Data: 2026-05-15 18:14:25
+Total de registros: 150
+Total de colunas: 22
+
+📊 COMPLETUDE DOS DADOS:
+   Registros completos: 150 (100.0%)
+   Com geolocalização: 150 (100.0%)
+
+🚦 DISTRIBUIÇÃO STATUS SEMÁFORO:
+   vermelho: 64 (42.7%)
+   verde: 43 (28.7%)
+   azul: 41 (27.3%)
+   amarelo: 2 (1.3%)
+
+💰 VALORES FINANCEIROS:
+   Valor total: R$ 1,073,836,597.94
+   Valor médio: R$ 7,158,910.65
+   Valor mínimo: R$ 610,030.22
+   Valor máximo: R$ 14,960,611.25
+
+📈 EXECUÇÃO:
+   Execução média: 37.9%
+   Obras 100% executadas: 0
+   Obras sem execução: 41
+
+🗺️  DISTRIBUIÇÃO GEOGRÁFICA:
+   Total de regiões: 9
+   Top 5 regiões:
+      Uberaba: 24 obras
+      Governador Valadares: 22 obras
+      Varginha: 21 obras
+      Belo Horizonte: 16 obras
+      Montes Claros: 16 obras
